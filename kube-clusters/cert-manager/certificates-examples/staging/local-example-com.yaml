@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-mvd-sh
+  namespace: default # This namespace should be the same as where the service runs
+spec:
+  secretName: local-mvd-sh-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.local.mvd.sh"
+  dnsNames:
+    - "local.mvd.sh"
+    - "*.local.mvd.sh"

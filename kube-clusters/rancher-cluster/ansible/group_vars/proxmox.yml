@@ -1,0 +1,4 @@
+---
+ansible_user: '{{ proxmox_lxc_ssh_user }}'
+ansible_password: '{{ proxmox_password }}'
+ansible_ssh_common_args: '-o PubkeyAuthentication=no'

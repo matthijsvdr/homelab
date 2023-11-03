@@ -1,0 +1,62 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: echo
+  namespace: default
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.echo.local.mvd.sh`)
+      kind: Rule
+      services:
+        - name: echo
+          port: 8080
+    - match: Host(`echo.local.mvd.sh`)
+      kind: Rule
+      services:
+        - name: echo
+          port: 8080
+      middlewares:
+        - name: default-headers
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: echo
+  namespace: default
+  labels:
+    app: echo
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      containers:
+      - name: echo
+        image: jmalloc/echo-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo
+  namespace: default
+spec:
+  selector:
+    app: echo
+  ports:
+  - name: http
+    targetPort: 8080
+    port: 8080

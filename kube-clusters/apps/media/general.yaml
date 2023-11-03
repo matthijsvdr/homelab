@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: media
+  labels:
+    name: media
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: media-local-mvd-sh
+  namespace: media # This namespace should be the same as where the service runs
+spec:
+  secretName: media-local-mvd-sh-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "media.local.mvd.sh"
+  dnsNames:
+    - "media.local.mvd.sh"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sonarr
+  namespace: media
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external  
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`media.local.mvd.sh`) && PathPrefix(`/sonarr`)
+    kind: Rule
+    services:
+    - name: sonarr
+      port: 8989
+  - match: Host(`media.local.mvd.sh`) && PathPrefix(`/radarr`)
+    kind: Rule
+    services:
+    - name: radarr
+      port: 7878      
+  - match: Host(`media.local.mvd.sh`) && PathPrefix(`/nzbget`)
+    kind: Rule
+    services:
+    - name: nzbget
+      port: 6789      
+  tls:
+    secretName: media-local-mvd-sh-tls

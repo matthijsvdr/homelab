@@ -1,0 +1,41 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rancher-local-mvd-sh
+  namespace: cattle-system # This namespace should be the same as where the service runs
+spec:
+  secretName: rancher-local-mvd-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "rancher.local.mvd.sh"
+  dnsNames:
+    - "rancher.local.mvd.sh"
+    - "*.rancher.local.mvd.sh"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rancher
+  namespace: cattle-system
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.rancher.local.mvd.sh`)
+      kind: Rule
+      services:
+        - name: rancher
+          port: 80
+    - match: Host(`rancher.local.mvd.sh`)
+      kind: Rule
+      services:
+        - name: rancher
+          port: 80
+      # middlewares:
+      #   - name: default-headers
+  tls:
+    secretName: rancher-local-mvd-tls

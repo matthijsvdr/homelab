@@ -1,0 +1,36 @@
+# # Default headers that are often used
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: test-headers
+#   namespace: default
+# spec:
+#   ipWhiteList:
+#     sourceRange:
+#       - 127.0.0.1/32
+#       - 192.168.0.0/16
+#       - 10.50.0.0/16
+# ---
+# # Default headers that are often used
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: MiddlewareTCP
+# metadata:
+#   name: testtcp-headers
+#   namespace: default
+# spec:
+#   ipWhiteList:
+#     sourceRange:
+#       - 10.50.5.30
+#       - 10.50.5.31
+#       - 10.50.5.32
+# ---
+# # Default headers that are often used
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: MiddlewareTCP
+# metadata:
+#   name: testtcp-headers-plex-direct
+#   namespace: default
+# spec:
+#   ipWhiteList:
+#     sourceRange:
+#       - 192.168.0.0/15

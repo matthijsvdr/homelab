@@ -1,0 +1,11 @@
+installCRDs: false
+replicaCount: 3
+extraArgs:
+  - --dns01-recursive-nameservers=192.168.22.10:53,192.168.22.11:53,192.168.22.12:53
+  - --dns01-recursive-nameservers-only
+podDnsPolicy: None
+podDnsConfig:
+  nameservers:
+    - 192.168.22.10
+    - 192.168.22.11
+    - 192.168.22.12

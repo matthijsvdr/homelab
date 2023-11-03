@@ -1,0 +1,25 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: swiss-army-knife
+  namespace: default
+  labels:
+    app: swiss-army-knife
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: swiss-army-knife
+  template:
+    metadata:
+      labels:
+        app: swiss-army-knife
+    spec:
+      containers:
+      - name: swiss-army-knife
+        image: rancherlabs/swiss-army-knife
