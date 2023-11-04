@@ -25,3 +25,7 @@ Run the command: service pihole-FTL restart
 
 https://hetzbiz.cloud/2022/03/04/wildcard-dns-in-pihole/
 ```
+
+## Intel GPU
+
+See [intel docs](../../../k3s-cluster/Intel/README.MD)

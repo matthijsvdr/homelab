@@ -6,13 +6,13 @@ data:
 kind: Secret
 metadata:
   name: plex-rclone
-  namespace: media
+  namespace: default
 ---
 # apiVersion: cert-manager.io/v1
 # kind: Certificate
 # metadata:
 #   name: plex-local-mvd-sh
-#   namespace: media # This namespace should be the same as where the service runs
+#   namespace: default # This namespace should be the same as where the service runs
 # spec:
 #   secretName: plex-local-mvd-sh-tls
 #   issuerRef:
@@ -26,40 +26,30 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: plex
-  namespace: media
+  namespace: default
   annotations: 
     kubernetes.io/ingress.class: traefik-external  
 spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`plex.local.mvd.sh`)
+  - match: Host(`plex2.local.mvd.sh`)
     kind: Rule
     services:
     - name: plex-plex-media-server
       port: 32400
-      serversTransport: skip-ssl
-      scheme: https
     middlewares:
       - name: default-headers
       - name: plex-whitelist
       # - name: test-headers
-  tls:
-    secretName: plex-local-mvd-sh-tls
----
-apiVersion: traefik.io/v1alpha1
-kind: ServersTransport
-metadata:
-  name: skip-ssl
-  namespace: media
-spec:
-  insecureSkipVerify: true                  # [2]
+  # tls:
+  #   secretName: plex-local-mvd-sh-tls
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: plex-whitelist
-  namespace: media
+  namespace: default
 spec:
   ipWhiteList:
     sourceRange:
@@ -72,7 +62,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRouteTCP
 metadata:
   name: plex
-  namespace: media
+  namespace: default
   annotations: 
     kubernetes.io/ingress.class: traefik-external  
 spec:
@@ -95,7 +85,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: MiddlewareTCP
 metadata:
   name: plex-direct-whitelist
-  namespace: media
+  namespace: default
 spec:
   ipWhiteList:
     sourceRange:
@@ -142,7 +132,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRouteTCP
 metadata:
   name: plex-domain
-  namespace: media
+  namespace: default
   annotations: 
     kubernetes.io/ingress.class: traefik-external  
 spec:

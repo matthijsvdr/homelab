@@ -30,7 +30,7 @@ pms:
   storageClassName: longhorn
 
   # the volume size to provision for the PMS database
-  configStorage: 2Gi
+  configStorage: 25Gi
 
   # resources: {}
   resources:
@@ -61,26 +61,43 @@ initContainer:
   # A custom script that will be run in an init container to do any setup before the PMS service starts up
   # This will be run everytime the pod starts, make sure that some mechanism is included to prevent
   # this from running more than once if it should only be run on the first startup.
-  script: ""
+  # script: ""
   ###
   ### Example init script that will import a pre-existing pms database if one has not already been setup
   ### This pms database must be available through a URL (or some other mechanism to be pulled into the container)
   # script: |-
   #   #!/bin/sh
   #   echo "fetching pre-existing pms database to import..."
-  #
+  
   #   if [ -d "/config/Library" ]; then
   #     echo "PMS library already exists, exiting."
   #     exit 0
   #   fi
-  #
+  
   #   apk --update add curl
-  #   curl http://example.com/pms.tgz -o pms.tgz
-  #   tar -xvzf pms.tgz -C /config
-  #   cp -r /config/data/Library /config/Library
-  #   rm -rf /config/data pms.tgz
-  #
+  #   wget -O /pms.tgz http://10.20.0.5/pms.tgz
+  #   tar -xvzf /pms.tgz -C /config
+  #   #cp -r /config/data/Library /config/Library
+  #   #rm -rf /config/data pms.tgz
+  #   rm pms.tgz
   #   echo "Done."
+
+  # script: |-
+  #   #!/bin/sh
+  #   echo "waiting for pre-existing pms database to uploaded..."
+
+  #   if [ -d "/config/Library" ]; then
+  #     echo "PMS library already exists, exiting."
+  #     exit 0
+  #   fi
+
+  #   # wait for the database archive to be manually copied to the server
+  #   while [ ! -f /pms.tgz ]; do sleep 2; done;
+
+  #   tar -xvzf /pms.tgz -C /config
+  #   rm pms.tgz
+
+  #   echo "Done."  
 
 # the settings specific to rclone
 rclone:
@@ -106,7 +123,7 @@ rclone:
   # this remote will be mounted at `/data/name` in the PMS container
   remotes: 
     - "cube:/media"
-    # - "cube:/k8s-media/plex"    
+    - "home-video:/homevideo"    
 
   # if the remote volumes should be mounted as read only
   readOnly: true
@@ -170,7 +187,7 @@ commonLabels: {}
 extraEnv:
   # This claim is optional, and is only used for the first startup of PMS
   # The claim is obtained from https://www.plex.tv/claim/ is is only valid for a few minutes
-  PLEX_CLAIM: "claim-h_hEfDGTsit3N3gfL8is"
+  # PLEX_CLAIM: "claim-h_hEfDGTsit3N3gfL8is"
   HOSTNAME: "Plex-kube"
   TZ: "Europe/Helinki"
   # PLEX_UID: '1037'
@@ -179,7 +196,8 @@ extraEnv:
 
   # a list of CIDRs that can use the server without authentication
   # this is only used for the first startup of PMS
-#   ALLOWED_NETWORKS: "0.0.0.0/0"
+  ALLOWED_NETWORKS: "192.168.128.0/32"
+  ADVERTISE_IP: "http://10.20.10.10:32400,https://plex.local.mvd.sh:443,https://plex12.mvd.sh:443"
 
 
 # Optionally specify additional volume mounts for the PMS and init containers.
@@ -188,27 +206,11 @@ extraVolumeMounts: []
   # - name: plex-config
   #   mountPath: /config
 
-      #   volumeMounts:
-      #   - name: sonarr-config
-      #     mountPath: /config         
-      #   - name: sonarr-media-tv
-      #     mountPath: /tv
-      #   - name: sonarr-downloads
-      #     mountPath: /downloads
-      # volumes:
-      # - name: sonarr-media-tv
-      #   nfs:
-      #     path: /volume1/media/TV
-      #     server: 10.20.0.5
-
 # Optionally specify additional volumes for the pod.
 extraVolumes: []
 # extraVolumes:
 #   - name: some-volume-name
 #     emptyDir: {}
-  # - name: plex-config
-  #   persistentVolumeClaim:
-  #     claimName: plex-config
 
 extraContainers: []
 # extraContainers:

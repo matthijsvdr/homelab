@@ -45,6 +45,11 @@ spec:
     kind: Rule
     services:
     - name: nzbget
-      port: 6789      
+      port: 6789
+  - match: Host(`media.local.mvd.sh`) && PathPrefix(`/sabnzbd`)
+    kind: Rule
+    services:
+    - name: sabnzbd
+      port: 8080      
   tls:
     secretName: media-local-mvd-sh-tls
