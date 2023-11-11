@@ -1,6 +1,6 @@
 globalArguments:
   - "--global.sendanonymoususage=false"
-  - "--global.checknewversion=false"    
+  - "--global.checknewversion=true"    
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"

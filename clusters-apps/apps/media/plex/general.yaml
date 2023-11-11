@@ -2,7 +2,8 @@
 apiVersion: v1
 data:
   rclone.conf: >-
-    ICBbY3ViZV0KICB0eXBlID0gc21iCiAgaG9zdCA9IDEwLjIwLjAuNQogIHVzZXIgPSBtZWRpYQogIHBhc3MgPSBRVEdIZzNPaFlpdGcyQjNJbjZ1d0ZXUUxPY1JFS1FNbk5VUG13RHdZVmNoWk9xakl0MXNJTWQ4eExkOEFwMUEKICBzcG4gPSBwbGV4LWt1YmU=
+    ICBbY3ViZV0KICB0eXBlID0gc21iCiAgaG9zdCA9IDEwLjIwLjAuNQogIHVzZXIgPSBtZWRpYQogIHBhc3MgPSBRVEdIZzNPaFlpdGcyQjNJbjZ1d0ZXUUxPY1JFS1FNbk5VUG13RHdZVmNoWk9xakl0MXNJTWQ4eExkOEFwMUEKICBzcG4gPSBwbGV4LWt1YmUKCiAgW2hvbWV2aWRlb10KICB0eXBlID0gc21iCiAgaG9zdCA9IDEwLjIwLjAuNQogIHVzZXIgPSBtZWRpYQogIHBhc3MgPSBRVEdIZzNPaFlpdGcyQjNJbjZ1d0ZXUUxPY1JFS1FNbk5VUG13RHdZVmNoWk9xakl0MXNJTWQ4eExkOEFwMUEKICBzcG4gPSBwbGV4LWt1YmU=
+  # ICBbY3ViZV0KICB0eXBlID0gc21iCiAgaG9zdCA9IDEwLjIwLjAuNQogIHVzZXIgPSBtZWRpYQogIHBhc3MgPSBRVEdIZzNPaFlpdGcyQjNJbjZ1d0ZXUUxPY1JFS1FNbk5VUG13RHdZVmNoWk9xakl0MXNJTWQ4eExkOEFwMUEKICBzcG4gPSBwbGV4LWt1YmU=
 kind: Secret
 metadata:
   name: plex-rclone
@@ -28,7 +29,7 @@ metadata:
   name: plex
   namespace: media
   annotations: 
-    kubernetes.io/ingress.class: traefik-external  
+    kubernetes.io/ingress.class: traefik-internal  
 spec:
   entryPoints:
     - websecure
@@ -42,7 +43,7 @@ spec:
       scheme: https
     middlewares:
       - name: default-headers
-      - name: plex-whitelist
+      # - name: plex-whitelist
       # - name: test-headers
   tls:
     secretName: plex-local-mvd-sh-tls
@@ -74,7 +75,7 @@ metadata:
   name: plex
   namespace: media
   annotations: 
-    kubernetes.io/ingress.class: traefik-external  
+    kubernetes.io/ingress.class: traefik-internal  
 spec:
   entryPoints:
     - plex
@@ -110,7 +111,7 @@ spec:
 #   name: plex
 #   namespace: default
 #   annotations: 
-#     kubernetes.io/ingress.class: traefik-external  
+#     kubernetes.io/ingress.class: traefik-internal  
 # spec:
 #   entryPoints:                  # [1]
 #     - plex
@@ -144,7 +145,7 @@ metadata:
   name: plex-domain
   namespace: media
   annotations: 
-    kubernetes.io/ingress.class: traefik-external  
+    kubernetes.io/ingress.class: traefik-internal  
 spec:
   entryPoints:                  # [1]
     - plex
