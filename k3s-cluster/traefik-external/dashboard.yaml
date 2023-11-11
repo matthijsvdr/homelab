@@ -1,0 +1,54 @@
+# --- # Certificate
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: traefik-local-tls
+#   namespace: traefik # This namespace should be the same as where the service runs
+# spec:
+#   secretName: traefik-local-tls
+#   issuerRef:
+#     name: letsencrypt-production #change this to production for valid certificate
+#     kind: ClusterIssuer
+#   commonName: "traefik.local.mvd.sh"
+#   dnsNames:
+#     - "traefik.local.mvd.sh"
+# --- # Ingress
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: traefik-dashboard
+#   namespace: traefik
+#   annotations: 
+#     kubernetes.io/ingress.class: traefik-external
+# spec:
+#   entryPoints:
+#     - websecure
+#   routes:
+#     - match: Host(`traefik.local.mvd.sh`)
+#       kind: Rule
+#       middlewares:
+#         - name: traefik-dashboard-basicauth
+#           namespace: traefik
+#       services:
+#         - name: api@internal
+#           kind: TraefikService
+#   tls:
+#     secretName: traefik-local-tls
+# --- # middle ware
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: traefik-dashboard-basicauth
+#   namespace: traefik
+# spec:
+#   basicAuth:
+#     secret: traefik-dashboard-auth
+# --- # Dashboard login
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: traefik-dashboard-auth
+#   namespace: traefik
+# type: Opaque
+# data:
+#   users # Removed generate a new one if needed check readme

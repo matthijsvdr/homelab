@@ -123,7 +123,7 @@ rclone:
   # this remote will be mounted at `/data/name` in the PMS container
   remotes: 
     - "cube:/media"
-    - "home-video:/homevideo"    
+    - "homevideo:/home-video"    
 
   # if the remote volumes should be mounted as read only
   readOnly: true

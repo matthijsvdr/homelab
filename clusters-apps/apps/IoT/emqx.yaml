@@ -1,0 +1,67 @@
+apiVersion: apps.emqx.io/v2beta1
+kind: EMQX
+metadata:
+   name: emqx
+  #  namespace: media
+spec:
+   image: emqx:5.1
+---
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: media-local-mvd-sh
+#   namespace: media # This namespace should be the same as where the service runs
+# spec:
+#   secretName: media-local-mvd-sh-tls
+#   issuerRef:
+#     name: letsencrypt-production
+#     kind: ClusterIssuer
+#   commonName: "media.local.mvd.sh"
+#   dnsNames:
+#     - "media.local.mvd.sh"
+# ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: emqx
+  # namespace: media
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external  
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`emqx.local.mvd.sh`)
+    kind: Rule
+    services:
+    - name: emqx-dashboard
+      port: 18083
+  # tls:
+  #   secretName: media-local-mvd-sh-tls
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: emqx
+  # namespace: media
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external  
+spec:
+  # entryPoints:
+  #   - plex
+  routes:
+  - match: HostSNIRegexp(`emqx.local.mvd.sh`)
+    services:
+    - name: emqx-listeners 
+      port: 8083
+    - name: emqx-listeners 
+      port: 8084
+    - name: emqx-listeners 
+      port: 1883       
+    - name: emqx-listeners 
+      port: 8883
+      
+    # middlewares:
+    # - name: plex-direct-whitelist
+  # tls:
+  #   passthrough: true

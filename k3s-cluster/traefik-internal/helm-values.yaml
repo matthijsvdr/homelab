@@ -10,7 +10,7 @@ additionalArguments:
 
 deployment:
   enabled: true
-  replicas: 1
+  replicas: 3
   annotations: {}
   podAnnotations: {}
   additionalContainers: []
@@ -27,16 +27,16 @@ ports:
     port: 32400
     expose: true
     exposedPort: 32400
-    protocol: TCP
+    protocol: TCP 
       
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: true
 
 providers:
   kubernetesCRD:
     enabled: true
-    ingressClass: traefik-external
+    ingressClass: traefik-internal
     allowExternalNameServices: true
   kubernetesIngress:
     enabled: true
@@ -58,9 +58,9 @@ service:
   externalIPs: []
   externalTrafficPolicy: Local
 
-logs:
-  access:
-    enabled: true
+# logs:
+#   access:
+#     enabled: true
 
 
 # --entryPoints.websecure.forwardedHeaders.trustedIPs=10.0.0.0/8,192.168.0.0/16
