@@ -23,10 +23,10 @@ To create a username and password run the following and replace the secret <br>
 `htpasswd -nb username password | openssl base64`
 
 ```bash
-helm install traefik traefik/traefik --namespace=traefik --create-namespace  --values=kube-clusters/k3s-cluster/traefik/helm-values.yaml
+helm install traefik-internal traefik/traefik --namespace=traefik --create-namespace  --values=traefik-internal/helm-values.yaml
 
-kubectl apply -f kube-clusters/k3s-cluster/traefik/default-headers.yaml
-kubectl apply -f kube-clusters/k3s-cluster/traefik/dashboard.yaml
+kubectl apply -f traefik-internal/default-headers.yaml
+kubectl apply -f traefik-internal/dashboard.yaml
 # To make changes
 helm upgrade traefik traefik/traefik --namespace=traefik --values=kube-clusters/k3s-cluster/traefik/helm-values.yaml
 ```

@@ -27,11 +27,30 @@ ports:
     port: 32400
     expose: true
     exposedPort: 32400
-    protocol: TCP 
-      
+    protocol: TCP
+  mqtt:
+    port: 1883
+    expose: true
+    protocol: TCP
+    exposedPort: 1883
+  mqttssl: # ssl
+    port: 8883
+    expose: true
+    protocol: TCP
+    exposedPort: 8883
+  mqttws: # web socket
+    port: 8083
+    expose: true
+    protocol: TCP
+    exposedPort: 8083
+  mqttwss: # web socket secure
+    port: 8084
+    expose: true 
+    protocol: TCP        
+    exposedPort: 8084
 ingressRoute:
   dashboard:
-    enabled: true
+    enabled: false
 
 providers:
   kubernetesCRD:

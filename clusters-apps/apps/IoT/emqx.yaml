@@ -1,10 +1,10 @@
-apiVersion: apps.emqx.io/v2beta1
-kind: EMQX
-metadata:
-   name: emqx
-  #  namespace: media
-spec:
-   image: emqx:5.1
+# apiVersion: apps.emqx.io/v2beta1
+# kind: EMQX
+# metadata:
+#    name: emqx
+#   #  namespace: media
+# spec:
+#    image: emqx:5.1
 ---
 # apiVersion: cert-manager.io/v1
 # kind: Certificate
@@ -26,7 +26,7 @@ metadata:
   name: emqx
   # namespace: media
   annotations: 
-    kubernetes.io/ingress.class: traefik-external  
+    kubernetes.io/ingress.class: traefik-internal  
 spec:
   entryPoints:
     - websecure
@@ -34,7 +34,7 @@ spec:
   - match: Host(`emqx.local.mvd.sh`)
     kind: Rule
     services:
-    - name: emqx-dashboard
+    - name: my-emqx
       port: 18083
   # tls:
   #   secretName: media-local-mvd-sh-tls
@@ -45,23 +45,77 @@ metadata:
   name: emqx
   # namespace: media
   annotations: 
-    kubernetes.io/ingress.class: traefik-external  
+    kubernetes.io/ingress.class: traefik-internal  
 spec:
-  # entryPoints:
-  #   - plex
+  entryPoints:
+    - mqtt
+    - mqttssl
+    - mqttws
+    - mqttwss
   routes:
-  - match: HostSNIRegexp(`emqx.local.mvd.sh`)
+  # - match: HostSNIRegexp(`emqx.local.mvd.sh`)
+  # - match: HostSNI(`*`)
+  - match: ClientIP(`192.168.0.0/16`)
     services:
-    - name: emqx-listeners 
+    - name: my-emqx-headless 
       port: 8083
-    - name: emqx-listeners 
+    - name: my-emqx-headless 
       port: 8084
-    - name: emqx-listeners 
+    - name: my-emqx-headless 
       port: 1883       
-    - name: emqx-listeners 
+    - name: my-emqx-headless 
       port: 8883
+    middlewares:
+    - name: iot-whitelist
       
     # middlewares:
     # - name: plex-direct-whitelist
   # tls:
   #   passthrough: true
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: emqx
+  # namespace: media
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal  
+spec:
+  entryPoints:
+    - mqtt
+    - mqttssl
+    - mqttws
+    - mqttwss
+  routes:
+  # - match: HostSNIRegexp(`emqx.local.mvd.sh`)
+  # - match: HostSNI(`*`)
+  - match: ClientIP(`192.168.0.0/16`, `10.0.0.0/8`, `172.16.0.20`)
+    services:
+    - name: my-emqx 
+      port: 8083
+    - name: my-emqx 
+      port: 8084
+    - name: my-emqx 
+      port: 1883       
+    - name: my-emqx 
+      port: 8883
+    middlewares:
+    - name: iot-whitelist
+      
+    # middlewares:
+    # - name: plex-direct-whitelist
+  # tls:
+  #   passthrough: true
+---
+# Whitelist ip ranges for the 
+apiVersion: traefik.containo.us/v1alpha1
+kind: MiddlewareTCP
+metadata:
+  name: iot-whitelist
+  # namespace: media
+spec:
+  ipWhiteList:
+    sourceRange:
+      - 192.168.0.0/16
+      - 10.0.0.0/8
+      - 172.16.0.20

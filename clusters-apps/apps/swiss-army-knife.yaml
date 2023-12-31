@@ -22,4 +22,5 @@ spec:
     spec:
       containers:
       - name: swiss-army-knife
-        image: rancherlabs/swiss-army-knife
+        image: leodotcloud/swiss-army-knife:latest
+        # image: rancherlabs/swiss-army-knife

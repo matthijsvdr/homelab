@@ -1,8 +1,15 @@
+
+
 For plex in kubernets to realise it has a local connection all plex.direct domains needs to point to the ingress and from there with a TCP connection passed through to plex itself. See [pihole](#pihole-example)
 
+## upgrading plex
+
+```bash
+helm upgrade plex plex/plex-media-server --namespace media -f helm-values.yaml
+```
 
 
-Idea
+## Idea
 
 Have plex run on a hostnetwork but still have a proxy in place for mvd.sh domain, then plex clients can contact it locally
 
