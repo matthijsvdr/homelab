@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: infra
+  labels:
+    name: infra
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ddclient-config
+  namespace: infra
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 1M
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddclient
+  namespace: infra
+  labels:
+    app: ddclient
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 5
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ddclient
+  template:
+    metadata:
+      labels:
+        app: ddclient
+    spec:
+      containers:
+      - name: ddclient
+        image: linuxserver/ddclient:3.11.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: Europe/Helsinki
+        volumeMounts:
+        - name: ddclient-config
+          mountPath: /config         
+      volumes:
+      - name: ddclient-config
+        persistentVolumeClaim:
+          claimName: ddclient-config
+      restartPolicy: Always
