@@ -9,20 +9,20 @@ metadata:
   name: plex-rclone
   namespace: media
 ---
-# apiVersion: cert-manager.io/v1
-# kind: Certificate
-# metadata:
-#   name: plex-local-mvd-sh
-#   namespace: media # This namespace should be the same as where the service runs
-# spec:
-#   secretName: plex-local-mvd-sh-tls
-#   issuerRef:
-#     name: letsencrypt-production
-#     kind: ClusterIssuer
-#   commonName: "plex.local.mvd.sh"
-#   dnsNames:
-#     - "plex.local.mvd.sh"
-# ---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: plex-local-mvd-sh
+  namespace: media # This namespace should be the same as where the service runs
+spec:
+  secretName: plex-local-mvd-sh-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "plex.local.mvd.sh"
+  dnsNames:
+    - "plex.local.mvd.sh"
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:

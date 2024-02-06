@@ -3,7 +3,7 @@ image:
   registry: index.docker.io
   repository: plexinc/pms-docker
   # If unset use "latest"
-  tag: "latest"
+  tag: "1.32.8.7639-fb6452ebf" # https://hub.docker.com/r/plexinc/pms-docker/tags/
   sha: ""
   pullPolicy: IfNotPresent
 
