@@ -10,7 +10,7 @@ spec:
   storageClassName: longhorn
   resources:
     requests:
-      storage: 1Gi
+      storage: 2Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: radarr
-        image: linuxserver/radarr:4.7.5
+        image: linuxserver/radarr:5.3.6
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
